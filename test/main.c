@@ -2,7 +2,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-#define BUFF_SIZE 4200
+#define BUFF_SIZE 99999
 
 int		get_next_line(const int fd, char **line)
 {
@@ -12,10 +12,12 @@ int		get_next_line(const int fd, char **line)
 	int			cur_line;
 	int			ret;
 	int			i;
+	int			returnval;
 
 	(void)line;
 	cur_line = 0;
 	i = 0;
+	returnval = -1;
 	ret = read(fd, buf, BUFF_SIZE);
 	buf[ret] = '\0';
 	if (buf[i] != '\0')
@@ -31,11 +33,14 @@ int		get_next_line(const int fd, char **line)
 			*line++ = &arr[i];
 		}
 		else if (cur_line > read_line)
+		{
+			returnval = 1;
 			break;
+		}
 		i++;
 	}
 	read_line++;
-	return (0);
+	return (returnval);
 }
 
 int		main(int argc, char **argv)
@@ -49,14 +54,9 @@ int		main(int argc, char **argv)
 		fd = open(argv[1], O_RDONLY);
 	else
 		return (2);
-	get_next_line(fd, &line);
-	ft_putchar('\n');
-	free(line);
-	get_next_line(fd, &line);
-	ft_putchar('\n');
-	free(line);
-	get_next_line(fd, &line);
-	free(line);
-	if (argc == 2)
-		close(fd);
+	while (get_next_line(fd, &line) >= 0)
+	{
+		ft_putchar('\n');
+	}
+	close(fd);
 }
