@@ -20,12 +20,16 @@ int		get_next_line(const int fd, char **line)
 	buf[ret] = '\0';
 	if (buf[i] != '\0')
 		ft_strcpy(arr, buf);
+	line = (char**)malloc(BUFF_SIZE);
 	while (arr[i])
 	{
 		if (arr[i] == '\n')
 			cur_line++;
 		else if (cur_line == read_line)
+		{
 			ft_putchar(arr[i]);
+			*line++ = &arr[i];
+		}
 		else if (cur_line > read_line)
 			break;
 		i++;
@@ -47,8 +51,12 @@ int		main(int argc, char **argv)
 		return (2);
 	get_next_line(fd, &line);
 	ft_putchar('\n');
+	free(line);
 	get_next_line(fd, &line);
 	ft_putchar('\n');
+	free(line);
+	get_next_line(fd, &line);
+	free(line);
 	if (argc == 2)
 		close(fd);
 }
