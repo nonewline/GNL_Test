@@ -2,7 +2,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-#define BUFF_SIZE 99999
+#define BUFF_SIZE 999999
 
 int		get_next_line(const int fd, char **line)
 {
