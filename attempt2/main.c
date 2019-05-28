@@ -2,19 +2,38 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-#define BUFF_SIZE 42
+#define BUFF_SIZE 999999
 
 #include <stdio.h>
 
-void	trim_until(char *str, int delimeter)
+void	copy_line(char *dest, char *src)
 {
-	int i; //Copy from
-	int j; //Copy to
+	int		i;
+
+	i = 0;
+	while (src[i] != '\n' && src[i] != '\0')
+		i++;
+	dest = (char*)malloc(sizeof(char) * (i + 1));
+	i = 0;
+	while (src[i] != '\n' && src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	ft_putendl(dest);
+}
+
+int		trim_until(char *str, int delimeter)
+{
+	int i;
+	int j;
 
 	j = 0;
 	i = 0;
-	while (str[i] != delimeter)
+	while (str[i] != delimeter && str[i] != '\0')
 		i++;
+	if (str[i] == '\0')
+		return (0);
 	i++;
 	while (str[j])
 	{
@@ -26,6 +45,7 @@ void	trim_until(char *str, int delimeter)
 		j++;
 	}
 	str[j] = '\0';
+	return (1);
 }
 
 int		get_next_line(const int fd, char **line)
@@ -35,6 +55,8 @@ int		get_next_line(const int fd, char **line)
 	int			ret;
 
 	(void)line;
+	if ((fd < 0 || line == NULL || read(fd, buf, 0) < 0))
+		return (-1);
 	ret = read(fd, buf, BUFF_SIZE);
 	buf[ret] = '\0';
 	if (!arr)
@@ -42,8 +64,9 @@ int		get_next_line(const int fd, char **line)
 		arr = (char*)malloc(ft_strlen(buf + 1));
 		ft_strcpy(arr, buf);
 	}
-	trim_until(arr, '\n');
-	ft_putendl(arr);
+	copy_line(*line, arr);
+	if (trim_until(arr, '\n') == 0)
+		return (0);
 	return (1);
 }
 
@@ -58,14 +81,11 @@ int		main(int argc, char **argv)
 		fd = open(argv[1], O_RDONLY);
 	else
 		return (2);
-//	while (get_next_line(fd, &line) == 1)
-//	{
+	while (get_next_line(fd, &line) == 1)
+	{
 //		ft_putendl(line);
 //		free(line);
-//	}
-	get_next_line(fd, &line);
-	get_next_line(fd, &line);
-	get_next_line(fd, &line);
+	}
 	if (argc == 2)
 		close(fd);
 }
