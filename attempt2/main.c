@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-void	copy_line(char *dest, char *src)
+char	*copy_line(char *dest, char *src)
 {
 	int		i;
 
@@ -20,7 +20,8 @@ void	copy_line(char *dest, char *src)
 		dest[i] = src[i];
 		i++;
 	}
-	ft_putendl(dest);
+//	ft_putendl(dest);
+	return (dest);
 }
 
 int		trim_until(char *str, int delimeter)
@@ -64,7 +65,7 @@ int		get_next_line(const int fd, char **line)
 		arr = (char*)malloc(ft_strlen(buf + 1));
 		ft_strcpy(arr, buf);
 	}
-	copy_line(*line, arr);
+	*line = copy_line(*line, arr);
 	if (trim_until(arr, '\n') == 0)
 		return (0);
 	return (1);
@@ -83,8 +84,8 @@ int		main(int argc, char **argv)
 		return (2);
 	while (get_next_line(fd, &line) == 1)
 	{
-//		ft_putendl(line);
-//		free(line);
+		ft_putendl(line);
+		free(line);
 	}
 	if (argc == 2)
 		close(fd);
